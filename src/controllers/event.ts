@@ -28,4 +28,58 @@ export default class EventController{
         }
       
       }
+
+      async joinEvent(req:Request, res:Response)  {
+        const { joinevent_id, participant } = req.query;
+      
+        try {
+          const findEvent = await Event.findById(joinevent_id);
+          const participantsPresent = findEvent.participants.length
+          if (participantsPresent <= findEvent.maximumParticipantsAllowed) {
+            findEvent.participants.push(participant)
+            await findEvent.save()
+            res.status(StatusCodes.OK).send(findEvent)
+          }
+          else
+            res.status(StatusCodes.OK).send("Can't add new participant")
+        }
+      
+        catch (error) {
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Method: joinEvent Class: EventController Error : ${error}`);
+        }
+      
+      }
+      
+      
+    async leaveEvent(req:Request, res:Response)  {
+        const { leaveEvent_id, participant } = req.query;
+      
+        try {
+          const leaveEvent = await Event.findById(leaveEvent_id);
+          leaveEvent.participants.remove(participant)
+          leaveEvent.leaveParticipants.push(participant)
+          await leaveEvent.save()
+          res.status(StatusCodes.OK).send(leaveEvent)
+        }
+      
+        catch (error) {
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Method: leaveEvent Class: EventController Error : ${error}`);
+        }
+      
+      }
+         
+     async getParticipantsOfEvent(req:Request, res:Response)  {
+        const { _id } = req.query;
+      
+        try {
+          const findParticipants = await Event.findById(_id );
+          res.status(StatusCodes.OK).send(findParticipants.participants)
+        }
+      
+        catch (error) {
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Method: getParticipantsOfEvent Class: EventController Error : ${error}`);
+        }
+      
+      }
+      
     }
