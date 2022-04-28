@@ -45,7 +45,25 @@ async createProfile(req:Request, res:Response) {
   
   }
   
+  async editProfile(req:Request, res:Response)  {
+    let { profile_id,firstName,lastName,gender,dateOfBirth } = req.query;
   
+    try {
+ 
+     await Profile.updateMany({ "_id": profile_id},
+      {"firstName":firstName,"lastName":lastName,"gender":gender,"dateOfBirth":dateOfBirth,updatedAt:Date.now()});
+    
+      const getProfile = await Profile.findById(profile_id)
+  
+     res.status(StatusCodes.OK).send(getProfile)
+
+    }
+  
+    catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Method: editProfile Class: ProfileController Error : ${error}`);
+    }
+
+}
   
 }
 
