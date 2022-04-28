@@ -13,7 +13,7 @@ app.use('/', adminRoutes)
 app.use('/', profileRoutes)
 app.use('/', eventRoutes)
 
-mongoose.connect('mongodb+srv://gudu1998:ab828066@cluster0.u9ogn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://gudu1998:<password>@cluster0.u9ogn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err))
 
