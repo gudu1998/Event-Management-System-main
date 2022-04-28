@@ -27,6 +27,24 @@ async createProfile(req:Request, res:Response) {
     }
   
   }
+
+  async viewProfile(req:Request, res:Response) {
+    let { profile_id } = req.query;
+  
+    try {
+      const viewProfile = await Profile.findById(profile_id);
+      if(!!viewProfile)
+      res.status(StatusCodes.OK).send(viewProfile)
+      else
+      res.status(StatusCodes.NOT_FOUND).send({ message: "Profile not found" })
+    }
+  
+    catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Method: viewProfile Class: ProfileController Error : ${error}`);
+    }
+  
+  }
+  
   
   
 }
