@@ -4,6 +4,35 @@ import multer = require("multer")
 import path = require("path")
 import Profile from "../models/profile"
 
+const storage = multer.diskStorage({
+    destination:'./uploads',
+    filename:function(req,file,cb){
+       cb(null,file.fieldname + '-' + Date.now() + path.extname(file.originalname)) 
+    } 
+  })
+  
+
+  const upload = multer({
+    storage:storage,  
+    limits:{fileSize:1000000000},  
+    fileFilter:function(req,file,cb){  
+       checkFileType(file,cb)
+    }
+  }).single('myImage')
+  
+
+  function checkFileType(file,cb){
+    const fileTypes = /jpeg|png|jpg|gif/
+    const extensionName = fileTypes.test(path.extname(file.originalname).toLowerCase())
+    const mimeType = fileTypes.test(file.mimetype)
+  
+    if(mimeType && extensionName){
+       return cb(null,true)
+    }else{
+       cb('Error:Images Only!')
+    }
+  }
+  
 export default class ProfileController{
 
 async createProfile(req:Request, res:Response) {
@@ -64,6 +93,22 @@ async createProfile(req:Request, res:Response) {
     }
 
 }
+
+updateProfilePhoto(req:Request,res:Response){
+    upload(req,res,(err)=>{
+       if(err){
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Method: updateProfilePhoto Class: ProfileController Error : ${err}`);
+       }else{
+          
+           if(req.file == undefined){
+          res.status(StatusCodes.NOT_FOUND).send({ message: "Error:No File Selected!" })
+  }else{
+   
+    res.status(StatusCodes.OK).send({ msg:'File Uploaded!',file:`/uploads/${req.file.filename}`})
+  }  
+       } 
+  })
+    }
   
 }
 
